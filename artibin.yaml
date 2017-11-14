@@ -1,0 +1,121 @@
+# APi specification for artibin
+
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: Artibin API
+  license:
+    name: MIT
+servers:
+  - url: /api/v1
+schemes:
+  - "http"
+  - "https"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+paths:
+  /artifact:
+    get:
+      summary: "All artifacts"
+      description: "List all the artifact you have access to"
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: "Filter for artifact name (matching *stuff*)"
+        - name: nextid
+          in: query
+          type: string
+          description: "Id of the next item in pagination"
+      responses:
+        '200':
+          description: An array of artifacts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArtifactList"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /artifact/{orgID}:
+    get:
+      summary: "All artifacts of an organization"
+      description: "List all the artifact of an organization"
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: "Filter for artifact name (matching *stuff*)"
+        - name: nextid
+          in: query
+          type: string
+          description: "Id of the next item in pagination"
+      responses:
+        '200':
+          description: An array of artifacts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArtifactList"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /artifact/{orgID}/{artifactID}/:
+  /artifact/{orgID}/{artifactID}/{artifactVersion}:
+  /organization/{orgID}:
+  /organization/{orgID}/user:
+  /organization/{orgID}/user/{userID}:
+  /user/{userID}:
+
+components:
+  securitySchemes:
+    apikey:
+      type: apiKey
+      name: server_token
+      in: query
+  schemas:
+    Artifact:
+      properties:
+        artifact_id:
+          type: string
+          description: Unique identifier of a given artifact
+        description:
+          type: string
+          description: Description of artifact.
+        display_name:
+          type: string
+          description: Display name of artifact.
+        url:
+          type: string
+          description: Url to artifact website.
+        license:
+          type: string
+          description: Name of the license 
+        org_id:
+          type: string
+          description: ID of the organization the artifact belongs to
+    ArtifactList:
+      properties:
+        products:
+          description: Contains the list of artifact
+          type: array
+          items:
+            $ref: "#/components/schemas/Artifact"
+    Error:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        fields:
+          type: string
+
